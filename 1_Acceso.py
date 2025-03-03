@@ -74,7 +74,7 @@ if 'informe' not in st.session_state:
     st.session_state.informe = {}
 
 st.markdown("# SOFTWARE DE SIMULACIÓN DE COMUNIDADES ENERGÉTICAS")
-st.markdown("## Versión 1.1.0 ; "+dt.date(2025,3,3).__format__('%d %b %Y, %I:%M%p'))
+st.markdown("### Versión 1.1.0 ("+dt.date(2025,3,3).__format__('%d %b %Y, %I:%M%p')+")")
 st.write(dt.datetime.today().__format__('%d %b %Y, %I:%M%p'))
 st.markdown(
     """<a href="https://endef.com/">
