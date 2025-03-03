@@ -6,6 +6,8 @@ import datetime as dt
 from geopy.geocoders import Nominatim 
 from string import punctuation
 
+import logging
+
 import base64
 # import logging
 
@@ -495,18 +497,20 @@ with tab7:
                     st.session_state.datoscomunidad["min_participation"]=comunidadEnerg["min_participation"]
                     st.session_state.datoscomunidad["energy_poverty"]=comunidadEnerg["energy_poverty"]
                     idComunidad,start = envioDatos(comunidadEnerg,fotovoltaicos,eolicos,baterias,usuarios,start)
-                    st.session_state.idComunidad = idComunidad
-                    st.session_state.informe["cantidadFV"] = numeroFV
-                    st.session_state.informe["cantidadEO"] = numeroEO
-                    st.session_state.informe["cantidadBat"] = numeroBat
-                    st.session_state.informe["cantidadUsers"] = numeroUsers
+                    if idComunidad != None:
+                        st.session_state.idComunidad = idComunidad
+                        st.session_state.informe["cantidadFV"] = numeroFV
+                        st.session_state.informe["cantidadEO"] = numeroEO
+                        st.session_state.informe["cantidadBat"] = numeroBat
+                        st.session_state.informe["cantidadUsers"] = numeroUsers
 
-                    st.write("Exportación realizada, ID de la comunidad: ",idComunidad)
+                        st.write("Exportación realizada, ID de la comunidad: ",idComunidad)
+                        sub = True
+                        st.session_state.envioInfo = True
+                    else:
+                        st.error("Mire los mensajes log o hable con el administrador.")
                 except Exception as e:
-                    st.write("Error en el envío")
-                    st.write(e)
-            sub = True
-            st.session_state.envioInfo = True
+                    st.error("Error en el envío "+str(e))
     if sub:
         st.success("Puede pasar a la pestaña de simulación para realizar la simulación de producción, consumos y reparto energético para el año que seleccione.")
 with tab8:
@@ -528,9 +532,13 @@ with tab8:
         st.session_state.running = False
 
     if st.button('Simular', disabled=((not any(st.session_state.procesosCurso)) or st.session_state.saltoSimu or st.session_state.running), type="primary", key='run_button'):
-        exitoSim = calcula2(st.session_state.procesosCurso,date_year)
-        st.session_state.anyo = date_year
-        st.session_state.saltoSimu = True
-        if exitoSim:
-            st.success("Puede ver los resultados yendo a los enlaces de Resultados Generales e Individuales de la barra lateral.")
-            st.write("Momento de inicio del proceso: ", st.session_state.procesosCurso)
+        try:
+            exitoSim = calcula2(st.session_state.procesosCurso,date_year)
+            st.session_state.anyo = date_year
+            st.session_state.saltoSimu = True
+            if exitoSim:
+                st.success("Puede ver los resultados yendo a los enlaces de Resultados Generales e Individuales de la barra     lateral.")
+                st.write("Momento de inicio del proceso: ", st.session_state.procesosCurso)
+        except Exception as e:
+            logging.error("Error en la simulacion: "+str(e))
+            st.session_state.saltoSimu = True
