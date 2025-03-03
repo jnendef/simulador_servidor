@@ -1,5 +1,6 @@
 from ..coef_scripts.agente_Basico import Agente_MySql
 import streamlit as st
+import logging
 # import pandas as pd
 
 # Envio de la informacion de la comunidad
@@ -66,17 +67,47 @@ def envioDatos(comunidad,fotovoltaicos,eolicos,baterias,usuarios,proceso):
     agente = Agente_MySql()
     idComunidad = 0
     start = ""
-    if any(comunidad):
-        idComunidad = envioComu(agente,comunidad)
-        st.write("ID de la comunidad: ", idComunidad)
-    if any(fotovoltaicos) and idComunidad>0:
-        envioGen(agente,fotovoltaicos,idComunidad,1)
-    if any(eolicos) and idComunidad>0:
-        envioGen(agente,eolicos,idComunidad,2)
-    if any(baterias) and idComunidad>0:
-        envioBat(agente,idComunidad,baterias)
-    if any(usuarios) and idComunidad>0:
-        envioUsr(agente,idComunidad,usuarios)
-    if any(proceso) and idComunidad>0:
-        start = envioPro(agente,idComunidad,proceso)
+    try:
+        if any(comunidad):
+            idComunidad = envioComu(agente,comunidad)
+            st.write("ID de la comunidad: ", idComunidad)
+    except Exception as e:
+        logging.debug("Problemas en el envio con datos de comunidad: "+str(e))
+        return None, None
+    
+    try:
+        if any(fotovoltaicos) and idComunidad>0:
+            envioGen(agente,fotovoltaicos,idComunidad,1)
+    except Exception as e:
+        logging.debug("Problemas en el envio con datos de instalación fotovoltaica: "+str(e))
+        return None, None
+
+    try:
+        if any(eolicos) and idComunidad>0:
+            envioGen(agente,eolicos,idComunidad,2)
+    except Exception as e:
+        logging.debug("Problemas en el envio con datos de instalación eolica: "+str(e))
+        return None, None
+    
+    try:
+        if any(baterias) and idComunidad>0:
+            envioBat(agente,idComunidad,baterias)
+    except Exception as e:
+        logging.debug("Problemas en el envio con datos de baterias: "+str(e))
+        return None, None
+    
+    try:
+        if any(usuarios) and idComunidad>0:
+            envioUsr(agente,idComunidad,usuarios)
+    except Exception as e:
+        logging.debug("Problemas en el envio con datos de usuarios: "+str(e))
+        return None, None
+    
+    try:
+        if any(proceso) and idComunidad>0:
+            start = envioPro(agente,idComunidad,proceso)
+    except Exception as e:
+        logging.debug("Problemas en el envio: "+str(e))
+        return None, None
+    
     return idComunidad,start
