@@ -232,7 +232,7 @@ if __name__ == "__main__":
     
     logging.basicConfig(
         level=logging.DEBUG,
-        handlers=[RotatingFileHandler(os.path.join(direc,"LEADING_PASO4_Output.log"), maxBytes=1000000, backupCount=4)],
+        handlers=[RotatingFileHandler(os.path.join(direc,"Mensajes_PASO4_Output.log"), maxBytes=1000000, backupCount=4)],
         format='%(asctime)s %(levelname)s %(message)s',
         datefmt='%m/%d/%Y %I:%M:%S %p')
 

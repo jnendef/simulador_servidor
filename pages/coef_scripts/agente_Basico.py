@@ -9,10 +9,26 @@ import mysql.connector
 import sys
 import os
 import logging
+from logging.handlers import RotatingFileHandler
 import configparser
 from time import sleep
 
 SLEEPING_MS = 10./1000.
+
+path = os.getcwd()
+direc = os.path.join(path,"logs")
+if not os.path.exists(direc):
+    try:
+        os.mkdir(direc)
+    except Exception as e:
+        direc = path
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    handlers=[RotatingFileHandler(os.path.join(direc,"Mensajes_Agente.log"), maxBytes=1000000, backupCount=4)],
+    format='%(asctime)s %(levelname)s %(message)s',
+    datefmt='%m/%d/%Y %I:%M:%S %p')
+
 
 class SingletonMeta(type):
     """
