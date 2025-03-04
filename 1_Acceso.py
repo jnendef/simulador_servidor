@@ -13,12 +13,17 @@ import base64
 # from streamlit import config
 
 # config.set_option(key="theme.base",value="dark")
-
 path = os.getcwd()
-direc = os.path.join(path,"logs\\LEADING_PASOS_Output.log")
+direc = os.path.join(path,"logs")
+if not os.path.exists(direc):
+    try:
+        os.mkdir(direc)
+    except Exception as e:
+        direc = path
+
 logging.basicConfig(
     level=logging.DEBUG,
-    handlers=[RotatingFileHandler(direc, maxBytes=1000000, backupCount=4)],
+    handlers=[RotatingFileHandler(os.path.join(direc,"LEADING_PASOS_Output.log"), maxBytes=1000000, backupCount=4)],
     format='%(asctime)s %(levelname)s %(message)s',
     datefmt='%m/%d/%Y %I:%M:%S %p')
 

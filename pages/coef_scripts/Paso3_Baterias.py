@@ -8,6 +8,7 @@
 
 import datetime
 from datetime import timedelta
+import os
 
 import pages.coef_scripts.agente_Basico as aB
 
@@ -276,9 +277,17 @@ def Paso3(agente, idComunidad):
         return proceso, VectorDatosBaterias
 
 if __name__ == "__main__":
+    path = os.getcwd()
+    direc = os.path.join(path,"logs")
+    if not os.path.exists(direc):
+        try:
+            os.mkdir(direc)
+        except Exception as e:
+            direc = path
+    
     logging.basicConfig(
         level=logging.DEBUG,
-        handlers=[RotatingFileHandler('./logs/LEADING_PASO3_Output.log', maxBytes=1000000, backupCount=4)],
+        handlers=[RotatingFileHandler(os.path.join(direc,"LEADING_PASO3_Output.log"), maxBytes=1000000, backupCount=4)],
         format='%(asctime)s %(levelname)s %(message)s',
         datefmt='%m/%d/%Y %I:%M:%S %p')
 
